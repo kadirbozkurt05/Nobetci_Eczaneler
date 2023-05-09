@@ -1,5 +1,7 @@
 package com.kadirbozkurt.nobetcieczaneler;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -20,8 +22,6 @@ import java.util.ArrayList;
 
 public class PharmacyAdapter extends RecyclerView.Adapter<PharmacyAdapter.PharmacyViewHolder> {
     private ArrayList<Pharmacy> allPharmacies;
-    private static String geoUrl;
-    private static String pharmacyUrl;
     private Pharmacy pharmacy;
 
     public PharmacyAdapter(ArrayList<Pharmacy> allPharmacies) {
@@ -39,24 +39,32 @@ public class PharmacyAdapter extends RecyclerView.Adapter<PharmacyAdapter.Pharma
     public void onBindViewHolder(@NonNull PharmacyViewHolder holder, int position) {
          pharmacy = allPharmacies.get(position);
 
+        for (Pharmacy each : allPharmacies) {
+            System.out.println(each);
+        }
+
         // Set click listener on the item view
         holder.pharmacyName.setText(pharmacy.getName());
         holder.pharmacyClose.setText("TARİF : "+pharmacy.getWhereToClose());
         holder.pharmacyPhone.setText("TELEFON : "+pharmacy.getPhone());
         holder.pharmacyAddress.setText("ADRES : "+pharmacy.getAdress());
-        pharmacyUrl = pharmacy.getUrl();
-
-        GetLatLong getLatLong = new GetLatLong();
-        getLatLong.execute(pharmacyUrl);
-
-        System.out.println(pharmacy.toString());
-
 
         holder.goToButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(geoUrl));
-                holder.itemView.getContext().startActivity(intent);
+
+
+                Uri gmmIntentUri = Uri.parse("google.navigation:q=" + pharmacy.getLatitude() + "," + pharmacy.getLongitude());
+                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                mapIntent.setPackage("com.google.android.apps.maps");
+
+                if (mapIntent.resolveActivity(holder.itemView.getContext().getPackageManager()) != null) {
+                   holder.itemView.getContext().startActivity(mapIntent);
+                } else {
+                    // Maps app is not installed on this device
+                }
+
+
             }
         });
 
@@ -69,9 +77,6 @@ public class PharmacyAdapter extends RecyclerView.Adapter<PharmacyAdapter.Pharma
                 holder.itemView.getContext().startActivity(intent);
             }
         });
-
-
-
 
     }
 
@@ -96,31 +101,6 @@ public class PharmacyAdapter extends RecyclerView.Adapter<PharmacyAdapter.Pharma
             pharmacyClose = itemView.findViewById(R.id.pharmacyToWhere);
             goToButton = itemView.findViewById(R.id.goToButton);
             getGoToButton2 = itemView.findViewById(R.id.goToButton2);
-        }
-    }
-
-    private class GetLatLong extends AsyncTask<String,Void,Void> {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected Void doInBackground(String... strings) {
-
-            try {
-                Document doc = Jsoup.connect(strings[0]).get();
-                geoUrl = doc.select(".d-flex.justify-content-center.mt-4").select("a").attr("href");
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void v) {
-            super.onPostExecute(v);
-            pharmacy.setGeoUrl(geoUrl);
         }
     }
 

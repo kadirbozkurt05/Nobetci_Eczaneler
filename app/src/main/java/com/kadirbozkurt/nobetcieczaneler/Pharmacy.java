@@ -3,16 +3,17 @@ package com.kadirbozkurt.nobetcieczaneler;
 public class Pharmacy {
 
     private String name;
-    private String geoUrl;
+    private double latitude;
+    private double longitude;
 
-
-    public Pharmacy(String name, String url, String adress, String phone, String whereToClose, String geoUrl) {
+    public Pharmacy(String name, String url, String adress, String phone, String whereToClose, double latitude, double longitude) {
         this.name = name;
         this.url = url;
         this.adress = adress;
         this.phone = phone;
         this.whereToClose = whereToClose;
-        this.geoUrl = geoUrl;
+        this.latitude = latitude;
+        this.longitude=longitude;
 
     }
 
@@ -62,19 +63,28 @@ public class Pharmacy {
         this.whereToClose = whereToClose;
     }
 
-    public String getGeoUrl() {
-        return geoUrl;
+    public double getLatitude() {
+        return latitude;
     }
 
-    public void setGeoUrl(String geoUrl) {
-        this.geoUrl = geoUrl;
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 
     @Override
     public String toString() {
         return "Pharmacy{" +
                 "name='" + name + '\'' +
-                ", geoUrl='" + geoUrl + '\'' +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
                 ", url='" + url + '\'' +
                 ", adress='" + adress + '\'' +
                 ", phone='" + phone + '\'' +
