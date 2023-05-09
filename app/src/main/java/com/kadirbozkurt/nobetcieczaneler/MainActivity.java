@@ -138,7 +138,8 @@ public class MainActivity extends AppCompatActivity {
     String[] Osmaniye = {"Bahçe", "Düziçi", "Hasanbeyli", "Kadirli", "Merkez", "Sumbas", "Toprakkale"};
 
 
-    String[][] wholeList = {Adana, Adıyaman, Afyonkarahisar, Ağrı, Amasya, Ankara, Antalya, Artvin,Aydın, Balıkesir, Bilecik, Bingöl, Bitlis, Bolu, Burdur, Bursa, Çanakkale,
+    String[][] wholeList = {Adana, Adıyaman, Afyonkarahisar, Ağrı, Amasya, Ankara, Antalya, Artvin,Aydın, Balıkesir,
+            Bilecik, Bingöl, Bitlis, Bolu, Burdur, Bursa, Çanakkale,
             Çankırı, Çorum, Denizli, Diyarbakır, Edirne, Elazığ, Erzincan, Erzurum, Eskişehir,
             Gaziantep, Giresun, Gümüşhane, Hakkari, Hatay, Isparta, Mersin, İstanbul, İzmir,
             Kars, Kastamonu, Kayseri, Kırklareli, Kırşehir, Kocaeli, Konya, Kütahya, Malatya,
@@ -169,8 +170,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void spinnerProvince(){
         //Creating the ArrayAdapter instance having the country list
-        provinceArray = new ArrayAdapter(this,android.R.layout.simple_spinner_item,iller);
-        provinceArray.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        provinceArray = new ArrayAdapter(this,R.layout.items_list,iller);
+        provinceArray.setDropDownViewResource(R.layout.items_list);
         //Setting the ArrayAdapter data on the Spinner
         binding.spinnerProvince.setAdapter(provinceArray);
 
@@ -189,7 +190,7 @@ public class MainActivity extends AppCompatActivity {
                 for (int j = 0; j < iller.length; j++) {
                     if (selectedProvince.equals(iller[i])){
                         districtArray = new ArrayAdapter<String>(MainActivity.this,
-                                R.layout.support_simple_spinner_dropdown_item,
+                                R.layout.items_list,
                                 wholeList[i]);
                         binding.spinnerDistricts.setAdapter(districtArray);
                         binding.spinnerDistricts.setSelection(districtId);

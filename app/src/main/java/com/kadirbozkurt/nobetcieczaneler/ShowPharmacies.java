@@ -126,11 +126,4 @@ public class ShowPharmacies extends AppCompatActivity {
 
         }
     }
-
-
-
-
-
-
-
 }
