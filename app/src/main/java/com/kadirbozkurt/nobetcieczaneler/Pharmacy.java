@@ -5,8 +5,13 @@ public class Pharmacy {
     private String name;
     private double latitude;
     private double longitude;
+    private String url;
+    private String adress;
+    private String phone;
+    private String whereToClose;
+    private String locationUrl;
 
-    public Pharmacy(String name, String url, String adress, String phone, String whereToClose, double latitude, double longitude) {
+    public Pharmacy(String name, String url, String adress, String phone, String whereToClose, double latitude, double longitude, String locationUrl) {
         this.name = name;
         this.url = url;
         this.adress = adress;
@@ -14,13 +19,9 @@ public class Pharmacy {
         this.whereToClose = whereToClose;
         this.latitude = latitude;
         this.longitude=longitude;
+        this.locationUrl = locationUrl;
 
     }
-
-    private String url;
-    private String adress;
-    private String phone;
-    private String whereToClose;
 
     public String getName() {
         return name;
@@ -78,6 +79,13 @@ public class Pharmacy {
     public void setLongitude(double longitude) {
         this.longitude = longitude;
     }
+    public String getLocationUrl() {
+        return locationUrl;
+    }
+
+    public void setLocationUrl(String locationUrl) {
+        this.locationUrl = locationUrl;
+    }
 
     @Override
     public String toString() {
@@ -89,6 +97,7 @@ public class Pharmacy {
                 ", adress='" + adress + '\'' +
                 ", phone='" + phone + '\'' +
                 ", whereToClose='" + whereToClose + '\'' +
+                ", locationUrl='" + locationUrl + '\'' +
                 '}';
     }
 }

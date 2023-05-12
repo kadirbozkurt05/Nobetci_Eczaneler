@@ -10,6 +10,7 @@ import android.location.Geocoder;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
+
 import com.kadirbozkurt.nobetcieczaneler.databinding.ActivityShowPharmaciesBinding;
 
 import org.jsoup.Jsoup;
@@ -28,6 +29,15 @@ public class ShowPharmacies extends AppCompatActivity {
     private Elements allPharmaciesAsElement;
     private ArrayList<Pharmacy> allPharmacies;
     private String urlOfPharmacy;
+    private Pharmacy pharmacy;
+    private String name;
+    private String address;
+    private String phone;
+    private String whereToClose;
+    private double latitude;
+    private double longitude;
+    private String locationUrl;
+    private String adressAndWhereToClose;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,12 +52,7 @@ public class ShowPharmacies extends AppCompatActivity {
         MyAsyncTask task = new MyAsyncTask();
         task.execute();
 
-
     }
-
-
-
-
 
     private class MyAsyncTask extends AsyncTask<Void, Void, Integer> {
         @Override
@@ -66,64 +71,58 @@ public class ShowPharmacies extends AppCompatActivity {
                 // Get all the tr elements within the tbody
                 allPharmaciesAsElement = tbody.select("tr");
 
+                for (Element each : allPharmaciesAsElement) {
+                    urlOfPharmacy = "https://www.eczaneler.gen.tr" + each.select("td").select("div").select("div").select("a").attr("href");
+                    name = each.select("td").select("div").select("div").select("a").select("span").text();
+                    adressAndWhereToClose = each.select("td").select("div").select("div").get(2).text();
+                    if (adressAndWhereToClose.contains("»")) {
+                        address = adressAndWhereToClose.substring(0, adressAndWhereToClose.indexOf('»'));
+                    } else {
+                        address = adressAndWhereToClose;
+                    }
+                    int countOfDivForPhone = each.select("td").select("div").select("div").size();
+                    phone = each.select("td").select("div").select("div").get(countOfDivForPhone - 1).text();
+
+                    //Burayı yukarı alabiliriz sanırım
+                    if (adressAndWhereToClose.contains("»")) {
+                        whereToClose = adressAndWhereToClose.substring(adressAndWhereToClose.indexOf("»") + 2);
+                    } else {
+                        whereToClose = "";
+                    }
+
+                    try {
+                        Document doc2 = null;
+                        doc2 = Jsoup.connect(urlOfPharmacy).get();
+                        locationUrl = doc2.select(".d-flex.justify-content-center.mt-4").select("a").attr("href");
+
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    int startIndex = locationUrl.indexOf("=") + 1;
+                    int endIndex = locationUrl.indexOf(",");
+                    double latitude = Double.parseDouble(locationUrl.substring(startIndex, endIndex));
+
+                    startIndex = endIndex + 1;
+                    double longitude = Double.parseDouble(locationUrl.substring(startIndex));
+
+                    // Select the table element with the class name "table table-striped mt-2"
+                    pharmacy = new Pharmacy(name, urlOfPharmacy, address, phone, whereToClose, latitude, longitude, locationUrl);
+                    allPharmacies.add(pharmacy);
+
+                }
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
             return null;
         }
 
         @Override
         protected void onPostExecute(Integer trCount) {
-
-            for (Element each : allPharmaciesAsElement) {
-                String adress = null;
-                String whereToClose = null;
-                double latitude = 0;
-                double longitude = 0;
-
-                urlOfPharmacy = "https://www.eczaneler.gen.tr" +  each.select("td").select("div").select("div").select("a").attr("href");
-                String name = each.select("td").select("div").select("div").select("a").select("span").text();
-                String adressAndWhereToClose = each.select("td").select("div").select("div").get(2).text();
-                if(adressAndWhereToClose.contains("»")){
-                    adress = adressAndWhereToClose.substring(0,adressAndWhereToClose.indexOf('»'));
-                }else {
-                    adress = adressAndWhereToClose;
-                }
-                int countOfDivForPhone = each.select("td").select("div").select("div").size();
-                    String phone = each.select("td").select("div").select("div").get(countOfDivForPhone-1).text();
-
-
-                if (adressAndWhereToClose.contains("»")){
-                    whereToClose = adressAndWhereToClose.substring(adressAndWhereToClose.indexOf("»")+2);
-                }else{
-                    whereToClose = "";
-                }
-
-                Geocoder geocoder = new Geocoder(ShowPharmacies.this);
-                List<Address> addresses = null;
-                try {
-                    addresses = geocoder.getFromLocationName(adress, 1);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-                if (!addresses.isEmpty()) {
-                    latitude = addresses.get(0).getLatitude();
-                    longitude = addresses.get(0).getLongitude();
-                    // Use latitude and longitude
-                } else {
-                    // Handle address not found
-                }
-
-                Pharmacy pharmacy = new Pharmacy(name,urlOfPharmacy,adress,phone,whereToClose,latitude,longitude);
-                allPharmacies.add(pharmacy);
-
-            }
-
             PharmacyAdapter adapter = new PharmacyAdapter(allPharmacies);
             binding.recyclerView.setLayoutManager(new LinearLayoutManager(ShowPharmacies.this));
             binding.recyclerView.setAdapter(adapter);
-            adapter.notifyDataSetChanged();
-
         }
     }
 }

@@ -1,7 +1,5 @@
 package com.kadirbozkurt.nobetcieczaneler;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -10,12 +8,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -23,7 +23,6 @@ import java.util.ArrayList;
 public class PharmacyAdapter extends RecyclerView.Adapter<PharmacyAdapter.PharmacyViewHolder> {
     private ArrayList<Pharmacy> allPharmacies;
     private Pharmacy pharmacy;
-
     public PharmacyAdapter(ArrayList<Pharmacy> allPharmacies) {
         this.allPharmacies = allPharmacies;
     }
@@ -37,17 +36,23 @@ public class PharmacyAdapter extends RecyclerView.Adapter<PharmacyAdapter.Pharma
 
     @Override
     public void onBindViewHolder(@NonNull PharmacyViewHolder holder, int position) {
-         pharmacy = allPharmacies.get(position);
 
-        for (Pharmacy each : allPharmacies) {
-            System.out.println(each);
-        }
+         pharmacy = allPharmacies.get(position);
 
         // Set click listener on the item view
         holder.pharmacyName.setText(pharmacy.getName());
         holder.pharmacyClose.setText("TARİF : "+pharmacy.getWhereToClose());
         holder.pharmacyPhone.setText("TELEFON : "+pharmacy.getPhone());
         holder.pharmacyAddress.setText("ADRES : "+pharmacy.getAdress());
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Pharmacy clickedPharmacy = allPharmacies.get(position);
+                System.out.println(clickedPharmacy.getLocationUrl());
+                System.out.println(clickedPharmacy.getLatitude()+"    "+clickedPharmacy.getLongitude());
+            }
+        });
 
         holder.goToButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,6 +108,8 @@ public class PharmacyAdapter extends RecyclerView.Adapter<PharmacyAdapter.Pharma
             getGoToButton2 = itemView.findViewById(R.id.goToButton2);
         }
     }
+
+
 
 }
 

@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
     String[] Bartın = {"Amasra", "Merkez", "Kurucaşile", "Ulus"};
     String[] Batman = {"Merkez", "Beşiri", "Gercüş", "Hasankeyf", "Kozluk", "Sason"};
     String[] Bayburt = {"Aydıntepe", "Merkez", "Demirözü"};
-    String[] Bilecik = {"Merkez", "Bozüyük", "Gölpazarı", "İnhisar", "Osmaneli", "Pazaryeri", "Söğüt", "Yenipazar"};
+    String[] Bilecik = {"Merkez", "Bozüyük", "Gölpazarı", "Osmaneli", "Pazaryeri", "Söğüt", "Yenipazar"};
     String[] Bingöl = {"Adaklı", "Merkez", "Genç", "Karlıova", "Kiğı", "Solhan", "Yayladere", "Yedisu"};
     String[] Bitlis = {"Adilcevaz", "Ahlat", "Merkez", "Güroymak", "Hizan", "Mutki", "Tatvan"};
     String[] Bolu = {"Merkez", "Dörtdivan", "Gerede", "Göynük", "Kıbrıscık", "Mengen", "Mudurnu", "Seben", "Yeniçağa"};
