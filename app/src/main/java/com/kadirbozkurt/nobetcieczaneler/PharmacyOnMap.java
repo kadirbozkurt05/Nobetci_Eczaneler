@@ -2,17 +2,28 @@ package com.kadirbozkurt.nobetcieczaneler;
 
 import androidx.fragment.app.FragmentActivity;
 
+import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.ImageView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.kadirbozkurt.nobetcieczaneler.databinding.ActivityPharmacyOnMapBinding;
-
 public class PharmacyOnMap extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
@@ -20,6 +31,7 @@ public class PharmacyOnMap extends FragmentActivity implements OnMapReadyCallbac
     private Singleton singleton;
     private Pharmacy pharmacy;
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,6 +41,10 @@ public class PharmacyOnMap extends FragmentActivity implements OnMapReadyCallbac
 
         singleton = Singleton.getInstance();
         pharmacy = singleton.getSelectedPharmacy();
+
+        Utils.clickEffect(binding.callButton);
+        Utils.clickEffect(binding.shareButton);
+        Utils.clickEffect(binding.navigateButton);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -49,13 +65,43 @@ public class PharmacyOnMap extends FragmentActivity implements OnMapReadyCallbac
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        System.out.println("pharmacy = " + pharmacy);
-
         // Add a marker in Sydney and move the camera
-        LatLng pharmacyLocation = new LatLng(pharmacy.getLatitude(), pharmacy.getLongitude());
-        Marker pharmacyMarker = mMap.addMarker(new MarkerOptions().position(pharmacyLocation).title(pharmacy.getName()));
-        float zoomLevel = 16.0f; //This value controls the zoom level
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(pharmacyLocation, zoomLevel));
+        // Create the custom InfoWindowAdapter and set it on the GoogleMap object
+        CustomInfoWindowAdapter infoWindowAdapter = new CustomInfoWindowAdapter(this);
+        mMap.setInfoWindowAdapter(infoWindowAdapter);
 
+// Add a marker to the map and show the InfoWindow
+        BitmapDescriptor icon = BitmapDescriptorFactory.fromBitmap(Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.eczane), 120, 120, false));
+        LatLng pharmacyLocation = new LatLng(pharmacy.getLatitude(), pharmacy.getLongitude());
+        MarkerOptions markerOptions = new MarkerOptions().position(pharmacyLocation).title(pharmacy.getName()).snippet(pharmacy.getAdress()).icon(icon);
+        Marker marker = mMap.addMarker(markerOptions);
+        marker.showInfoWindow();
+
+
+// Zoom to the marker
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(pharmacyLocation, 16));
+
+
+    }
+    public void call(View v){
+        Intent intent = new Intent(Intent.ACTION_DIAL);
+        intent.setData(Uri.parse("tel:" + pharmacy.getPhone()));
+        startActivity(intent);
+    }
+    public void route(View v){
+        String uri = "google.navigation:q=" + pharmacy.getLatitude() + "," + pharmacy.getLongitude();
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+        intent.setPackage("com.google.android.apps.maps");
+        startActivity(intent);
+    }
+    public void share(View v){
+        String latitude =""+ pharmacy.getLatitude();
+        String longitude =""+ pharmacy.getLongitude();
+        String url = pharmacy.getName()+"\n"+pharmacy.getPhone()+"\nhttps://www.google.com/maps/search/?api=1&query="+latitude+","+longitude;
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.setType("text/url");
+        shareIntent.putExtra(Intent.EXTRA_SUBJECT, pharmacy.getName());
+        shareIntent.putExtra(Intent.EXTRA_TEXT, url);
+        startActivity(Intent.createChooser(shareIntent, "Paylaş"));
     }
 }

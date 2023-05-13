@@ -43,7 +43,12 @@ public class PharmacyAdapter extends RecyclerView.Adapter<PharmacyAdapter.Pharma
 
         // Set click listener on the item view
         holder.pharmacyName.setText(pharmacy.getName());
-        holder.pharmacyClose.setText("TARİF : "+pharmacy.getWhereToClose());
+        if (pharmacy.getWhereToClose().isEmpty()){
+            holder.pharmacyClose.setVisibility(View.GONE);
+        }else{
+            holder.pharmacyClose.setText("TARİF : "+pharmacy.getWhereToClose());
+        }
+
         holder.pharmacyPhone.setText("TELEFON : "+pharmacy.getPhone());
         holder.pharmacyAddress.setText("ADRES : "+pharmacy.getAdress());
 
@@ -51,41 +56,10 @@ public class PharmacyAdapter extends RecyclerView.Adapter<PharmacyAdapter.Pharma
             @Override
             public void onClick(View view) {
                 Pharmacy clickedPharmacy = allPharmacies.get(position);
-
                 singleton.setSelectedPharmacy(clickedPharmacy);
                 holder.itemView.getContext().startActivity(new Intent(holder.itemView.getContext(),PharmacyOnMap.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
             }
         });
-
-        holder.goToButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-
-                Uri gmmIntentUri = Uri.parse("google.navigation:q=" + pharmacy.getLatitude() + "," + pharmacy.getLongitude());
-                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                mapIntent.setPackage("com.google.android.apps.maps");
-
-                if (mapIntent.resolveActivity(holder.itemView.getContext().getPackageManager()) != null) {
-                   holder.itemView.getContext().startActivity(mapIntent);
-                } else {
-                    // Maps app is not installed on this device
-                }
-
-
-            }
-        });
-
-        holder.getGoToButton2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // create the intent to launch the phone app with the phone number
-                Intent intent = new Intent(Intent.ACTION_DIAL);
-                intent.setData(Uri.parse("tel:" + pharmacy.getPhone()));
-                holder.itemView.getContext().startActivity(intent);
-            }
-        });
-
     }
 
     @Override
@@ -95,11 +69,9 @@ public class PharmacyAdapter extends RecyclerView.Adapter<PharmacyAdapter.Pharma
 
     public static class PharmacyViewHolder extends RecyclerView.ViewHolder {
         private TextView pharmacyName;
-        private ImageView goToButton;
         private TextView pharmacyAddress;
         private TextView pharmacyPhone;
         private TextView pharmacyClose;
-        private ImageView getGoToButton2;
 
         public PharmacyViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -107,8 +79,7 @@ public class PharmacyAdapter extends RecyclerView.Adapter<PharmacyAdapter.Pharma
             pharmacyAddress = itemView.findViewById(R.id.pharmacyAddress);
             pharmacyPhone = itemView.findViewById(R.id.pharmacyPhone);
             pharmacyClose = itemView.findViewById(R.id.pharmacyToWhere);
-            goToButton = itemView.findViewById(R.id.goToButton);
-            getGoToButton2 = itemView.findViewById(R.id.goToButton2);
+
         }
     }
 

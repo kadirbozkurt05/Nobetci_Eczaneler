@@ -4,7 +4,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="#FFB2B2"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
@@ -32,7 +31,8 @@
 
     <ImageView
         android:id="@+id/button"
-        android:src="@drawable/button"
+        android:src="@drawable/savebutton"
+        android:clickable="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"

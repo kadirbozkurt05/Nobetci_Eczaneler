@@ -29,7 +29,6 @@ import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.kadirbozkurt.nobetcieczaneler.databinding.ActivityMainBinding;
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Locale;
@@ -66,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
     String[] Ardahan = {"Merkez", "Çıldır", "Damal", "Göle", "Hanak", "Posof"};
     String[] Artvin = {"Ardanuç", "Arhavi", "Merkez", "Borçka", "Hopa", "Murgul", "Şavşat", "Yusufeli"};
     String[] Aydın = {"Bozdoğan", "Buharkent", "Çine", "Didim", "Efeler", "Germencik", "İncirliova", "Karacasu", "Karpuzlu", "Koçarlı", "Köşk", "Kuşadası", "Kuyucak", "Nazilli", "Söke", "Sultanhisar", "Yenipazar"};
-    String[] Balıkesir = {"Altıeylül", "Ayvalık", "Balya", "Bandırma", "Bigadiç", "Burhaniye", "Dursunbey", "Edremit", "Erdek", "Gömeç", "Gönen", "Havran", "İvrindi", "Karesi", "Kepsut", "Manyas", "Marmara", "Savaştepe", "Sındırgı", "Susurluk"};
+    String[] Balıkesir = {"Merkez","Ayvalık", "Balya", "Bandırma", "Bigadiç", "Burhaniye", "Dursunbey", "Edremit", "Erdek", "Gömeç", "Gönen", "Havran", "İvrindi", "Kepsut", "Manyas", "Savaştepe", "Sındırgı", "Susurluk"};
     String[] Bartın = {"Amasra", "Merkez", "Kurucaşile", "Ulus"};
     String[] Batman = {"Merkez", "Beşiri", "Gercüş", "Hasankeyf", "Kozluk", "Sason"};
     String[] Bayburt = {"Aydıntepe", "Merkez", "Demirözü"};
@@ -166,6 +165,7 @@ public class MainActivity extends AppCompatActivity {
         districtId=sharedPreferences.getInt("districtId",0);
         spinnerProvince();
         spinnerDistrict();
+        Utils.clickEffect(binding.button);
     }
 
     public void spinnerProvince(){
@@ -230,7 +230,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
     public void starBar(){
         binding.ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
@@ -301,7 +300,6 @@ public class MainActivity extends AppCompatActivity {
         return url;
 
     }
-
     @Override
     public void onBackPressed() {
         AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this).setCancelable(false);
@@ -322,4 +320,5 @@ public class MainActivity extends AppCompatActivity {
                 })
                 .show()   ;
     }
+
 }

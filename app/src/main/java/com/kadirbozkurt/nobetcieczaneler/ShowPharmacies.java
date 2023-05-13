@@ -10,6 +10,7 @@ import android.location.Geocoder;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import com.kadirbozkurt.nobetcieczaneler.databinding.ActivityShowPharmaciesBinding;
 
@@ -112,7 +113,9 @@ public class ShowPharmacies extends AppCompatActivity {
                 }
 
             } catch (IOException e) {
-                e.printStackTrace();
+                Toast.makeText(ShowPharmacies.this, "Bir hata oluştu lütfen internet bağlantınızı kontrol edin\n" +
+                        "Hatanın devam etmesi durumunda lütfen bizimle iletişime geçin.", Toast.LENGTH_SHORT).show();
+                finish();
             }
 
             return null;

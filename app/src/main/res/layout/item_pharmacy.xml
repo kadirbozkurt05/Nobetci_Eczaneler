@@ -9,17 +9,28 @@
     android:focusable="true">
 
     <LinearLayout
-        android:layout_width="match_parent"
         android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:orientation="horizontal">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/pharmacy_image"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/eczane"
+            />
 
         <LinearLayout
             android:layout_width="0dp"
+            android:layout_marginStart="4dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="vertical">
@@ -42,6 +53,7 @@
             <TextView
                 android:id="@+id/pharmacyPhone"
                 android:layout_marginTop="5dp"
+                android:textColor="#7DC503"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Pharmacy Phone" />
@@ -53,31 +65,8 @@
                 android:layout_height="wrap_content"
                 android:text="Pharmacy Close To" />
         </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="50dp"
-            android:layout_gravity="right"
-            android:orientation="vertical"
-            android:layout_height="wrap_content">
-            <ImageView
-                android:id="@+id/goToButton"
-                android:layout_gravity="top"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_weight="0.5"
-                android:src="@drawable/maps"/>
-
-            <ImageView
-                android:id="@+id/goToButton2"
-                android:layout_width="50dp"
-                android:layout_height="54dp"
-                android:layout_gravity="bottom"
-                android:layout_weight="0.5"
-                android:src="@drawable/call" />
-
-        </LinearLayout>
-
     </LinearLayout>
+
     <View
         android:layout_width="match_parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -85,8 +74,8 @@
         app:layout_constraintTop_toBottomOf="@id/linearLayout"
         android:layout_marginBottom="5dp"
         android:layout_marginTop="5dp"
-        android:layout_height="2dp"
-        android:background="@android:color/black" />
+        android:layout_height="1dp"
+        android:background="#938F8F" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
