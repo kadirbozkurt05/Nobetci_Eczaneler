@@ -22,7 +22,9 @@ import java.util.ArrayList;
 
 public class PharmacyAdapter extends RecyclerView.Adapter<PharmacyAdapter.PharmacyViewHolder> {
     private ArrayList<Pharmacy> allPharmacies;
+    private Singleton singleton;
     private Pharmacy pharmacy;
+
     public PharmacyAdapter(ArrayList<Pharmacy> allPharmacies) {
         this.allPharmacies = allPharmacies;
     }
@@ -36,7 +38,7 @@ public class PharmacyAdapter extends RecyclerView.Adapter<PharmacyAdapter.Pharma
 
     @Override
     public void onBindViewHolder(@NonNull PharmacyViewHolder holder, int position) {
-
+        singleton = Singleton.getInstance();
          pharmacy = allPharmacies.get(position);
 
         // Set click listener on the item view
@@ -49,8 +51,9 @@ public class PharmacyAdapter extends RecyclerView.Adapter<PharmacyAdapter.Pharma
             @Override
             public void onClick(View view) {
                 Pharmacy clickedPharmacy = allPharmacies.get(position);
-                System.out.println(clickedPharmacy.getLocationUrl());
-                System.out.println(clickedPharmacy.getLatitude()+"    "+clickedPharmacy.getLongitude());
+
+                singleton.setSelectedPharmacy(clickedPharmacy);
+                holder.itemView.getContext().startActivity(new Intent(holder.itemView.getContext(),PharmacyOnMap.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
             }
         });
 
