@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Nöbetçi Eczaneler (TÜM TÜRKİYE)</string>
+    <string name="app_name">Nöbetçi Eczaneler</string>
     <string name="title_activity_pharmacy_on_map">PharmacyOnMap</string>
 
 </resources>

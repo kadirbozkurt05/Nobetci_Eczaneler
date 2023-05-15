@@ -1,14 +1,16 @@
 package com.kadirbozkurt.nobetcieczaneler;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 
 import android.content.SharedPreferences;
-import android.location.Address;
-import android.location.Geocoder;
+
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
@@ -25,10 +27,10 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 public class ShowPharmacies extends AppCompatActivity {
     ActivityShowPharmaciesBinding binding;
+    private int count;
     private String url;
     private Element tableElement;
     private Elements allPharmaciesAsElement;
@@ -48,6 +50,7 @@ public class ShowPharmacies extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         sharedPreferences =this.getSharedPreferences(this.getPackageName(), Context.MODE_PRIVATE);
+        count = sharedPreferences.getInt("count",0);
         int theme = sharedPreferences.getInt("theme",android.R.style.Theme);
         setTheme(theme);
         super.onCreate(savedInstanceState);
@@ -55,6 +58,7 @@ public class ShowPharmacies extends AppCompatActivity {
         View view = binding.getRoot();
         setContentView(view);
 
+        Utils.clickEffect(binding.options);
         allPharmacies = new ArrayList<>();
         Intent intent = getIntent();
         url = intent.getStringExtra("url");
@@ -64,11 +68,17 @@ public class ShowPharmacies extends AppCompatActivity {
 
     }
 
+    public void goToSettings(View view) {
+        sharedPreferences.edit().putBoolean("isChecked",false).apply();
+        startActivity(new Intent(ShowPharmacies.this,MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
+    }
+
     private class MyAsyncTask extends AsyncTask<Void, Void, Integer> {
         @Override
         protected Integer doInBackground(Void... voids) {
             try {
                 // Parse the HTML document using Jsoup
+                System.out.println("url = " + url);
                 Document doc = Jsoup.connect(url).get();
 
                 // Select the table element with the class name "table table-striped mt-2"
@@ -150,10 +160,39 @@ public class ShowPharmacies extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.options:
                 // do something
+                sharedPreferences.edit().putBoolean("isChecked",false).apply();
                 startActivity(new Intent(ShowPharmacies.this,MainActivity.class));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+    @Override
+    public void onBackPressed() {
+        System.out.println("count = " + count);
+        count++;
+        if (count>=5){
+            AlertDialog.Builder alert = new AlertDialog.Builder(ShowPharmacies.this).setCancelable(false);
+            alert.setMessage("Bizi Play Store'da değerlendirmek ister misin?")
+                    .setNegativeButton("Hayır", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            finish();
+                        }
+                    })
+                    .setPositiveButton("Evet", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            Uri uriUrl = Uri.parse("https://play.google.com/store/apps/details?id=com.kadirbozkurt.nobetcieczaneler");
+                            Intent launchBrowser = new Intent(Intent.ACTION_VIEW, uriUrl);
+                            startActivity(launchBrowser);
+                        }
+                    })
+                    .show();
+            count = 0;
+        }else{
+            finish();
+        }
+        sharedPreferences.edit().putInt("count",count).apply();
     }
 }
