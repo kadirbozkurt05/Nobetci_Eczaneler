@@ -3,8 +3,10 @@ package com.kadirbozkurt.nobetcieczaneler;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.content.Context;
 import android.content.Intent;
 
+import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.AsyncTask;
@@ -41,13 +43,18 @@ public class ShowPharmacies extends AppCompatActivity {
     private double longitude;
     private String locationUrl;
     private String adressAndWhereToClose;
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        sharedPreferences =this.getSharedPreferences(this.getPackageName(), Context.MODE_PRIVATE);
+        int theme = sharedPreferences.getInt("theme",android.R.style.Theme);
+        setTheme(theme);
         super.onCreate(savedInstanceState);
         binding = ActivityShowPharmaciesBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
+
         allPharmacies = new ArrayList<>();
         Intent intent = getIntent();
         url = intent.getStringExtra("url");

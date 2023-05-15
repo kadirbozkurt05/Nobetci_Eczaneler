@@ -3,9 +3,12 @@ package com.kadirbozkurt.nobetcieczaneler;
 import androidx.fragment.app.FragmentActivity;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
@@ -21,6 +24,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.kadirbozkurt.nobetcieczaneler.databinding.ActivityPharmacyOnMapBinding;
@@ -30,10 +34,15 @@ public class PharmacyOnMap extends FragmentActivity implements OnMapReadyCallbac
     private ActivityPharmacyOnMapBinding binding;
     private Singleton singleton;
     private Pharmacy pharmacy;
+    private SharedPreferences sharedPreferences;
+    private int theme;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        sharedPreferences =this.getSharedPreferences(this.getPackageName(), Context.MODE_PRIVATE);
+        theme = sharedPreferences.getInt("theme",android.R.style.Theme);
+        setTheme(theme);
         super.onCreate(savedInstanceState);
 
         binding = ActivityPharmacyOnMapBinding.inflate(getLayoutInflater());
@@ -64,6 +73,18 @@ public class PharmacyOnMap extends FragmentActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        MapStyleOptions retroStyle = MapStyleOptions.loadRawResourceStyle(
+                this, R.raw.maps_retro);
+        MapStyleOptions darkStyle = MapStyleOptions.loadRawResourceStyle(this,R.raw.maps_dark);
+
+        switch (theme){
+            case R.style.Theme_AppCompat:
+                mMap.setMapStyle(darkStyle);
+                break;
+            default:
+                mMap.setMapStyle(retroStyle);
+                break;
+        }
 
         // Add a marker in Sydney and move the camera
         // Create the custom InfoWindowAdapter and set it on the GoogleMap object

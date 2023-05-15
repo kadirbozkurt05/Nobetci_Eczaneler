@@ -13,6 +13,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -25,6 +26,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.RatingBar;
 import android.widget.Toast;
 
@@ -157,17 +160,21 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        sharedPreferences =this.getSharedPreferences(this.getPackageName(), Context.MODE_PRIVATE);
+        int theme = sharedPreferences.getInt("theme", android.R.style.Theme);
+        setTheme(theme);
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
         starBar();
-        sharedPreferences =this.getSharedPreferences(this.getPackageName(), Context.MODE_PRIVATE);
         provinceId=sharedPreferences.getInt("provinceId",0);
         districtId=sharedPreferences.getInt("districtId",0);
         spinnerProvince();
         spinnerDistrict();
         Utils.clickEffect(binding.button);
+        themeChange();
+
     }
 
     public void spinnerProvince(){
@@ -321,6 +328,46 @@ public class MainActivity extends AppCompatActivity {
                     }
                 })
                 .show()   ;
+    }
+
+    private void themeChange(){
+        RadioGroup themeRadioGroup = findViewById(R.id.themeRadioGroup);
+        int savedRadioButton = sharedPreferences.getInt("savedRadioButton", R.id.defaultThemeRadioButton);
+        themeRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch (checkedId) {
+                    case R.id.darkThemeRadioButton:
+                        setTheme(R.style.Theme_AppCompat);
+                        sharedPreferences.edit().putInt("theme", R.style.Theme_AppCompat).apply();
+                        sharedPreferences.edit().putInt("savedRadioButton", R.id.darkThemeRadioButton).apply();
+                        break;
+                    case R.id.lightThemeRadioButton:
+                        setTheme(R.style.Theme_AppCompat_Light);
+                        sharedPreferences.edit().putInt("theme", R.style.Theme_AppCompat_Light).apply();
+                        sharedPreferences.edit().putInt("savedRadioButton", R.id.lightThemeRadioButton).apply();
+                        break;
+                    case R.id.defaultThemeRadioButton:
+                        int nightModeFlags = getResources().getConfiguration().uiMode &
+                                Configuration.UI_MODE_NIGHT_MASK;
+                        if (nightModeFlags == Configuration.UI_MODE_NIGHT_YES) {
+                            // Koyu mod aktif
+                            setTheme(R.style.Theme_AppCompat);
+                            sharedPreferences.edit().putInt("theme", R.style.Theme_AppCompat).apply();
+                            sharedPreferences.edit().putInt("savedRadioButton", R.id.darkThemeRadioButton).apply();
+                        } else {
+                            // Açık mod aktif
+                            setTheme(R.style.Theme_AppCompat_Light);
+                            sharedPreferences.edit().putInt("theme", R.style.Theme_AppCompat_Light).apply();
+                            sharedPreferences.edit().putInt("savedRadioButton", R.id.lightThemeRadioButton).apply();
+                        }
+                        break;
+                }
+            }
+        });
+
+        RadioButton selectedRadioButton = findViewById(savedRadioButton);
+        selectedRadioButton.setChecked(true);
     }
 
 }
