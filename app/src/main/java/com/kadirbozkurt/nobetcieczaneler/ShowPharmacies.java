@@ -9,6 +9,8 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -126,6 +128,25 @@ public class ShowPharmacies extends AppCompatActivity {
             PharmacyAdapter adapter = new PharmacyAdapter(allPharmacies);
             binding.recyclerView.setLayoutManager(new LinearLayoutManager(ShowPharmacies.this));
             binding.recyclerView.setAdapter(adapter);
+        }
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.option_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.options:
+                // do something
+                startActivity(new Intent(ShowPharmacies.this,MainActivity.class));
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 }
