@@ -1,5 +1,6 @@
 package com.kadirbozkurt.nobetcieczaneler;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -18,6 +19,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.kadirbozkurt.nobetcieczaneler.databinding.ActivityShowPharmaciesBinding;
 
 import org.jsoup.Jsoup;
@@ -66,6 +71,7 @@ public class ShowPharmacies extends AppCompatActivity {
         MyAsyncTask task = new MyAsyncTask();
         task.execute();
 
+        checkUpdate();
     }
 
     public void goToSettings(View view) {
@@ -171,7 +177,7 @@ public class ShowPharmacies extends AppCompatActivity {
     public void onBackPressed() {
         System.out.println("count = " + count);
         count++;
-        if (count>=5){
+        if (count>=6){
             AlertDialog.Builder alert = new AlertDialog.Builder(ShowPharmacies.this).setCancelable(false);
             alert.setMessage("Bizi Play Store'da değerlendirmek ister misin?")
                     .setNegativeButton("Hayır", new DialogInterface.OnClickListener() {
@@ -194,5 +200,35 @@ public class ShowPharmacies extends AppCompatActivity {
             finish();
         }
         sharedPreferences.edit().putInt("count",count).apply();
+    }
+
+    private void checkUpdate(){
+        String versionCode = ""+BuildConfig.VERSION_CODE;
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+
+        db.collection("version").document("version").addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+                if (value.get("version")!=null&&!value.getData().get("version").equals(versionCode) && count>=5){
+                    AlertDialog.Builder alert = new AlertDialog.Builder(ShowPharmacies.this);
+                    alert.setMessage("Yeni bir güncelleme var!").setNegativeButton("Daha Sonra", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+
+                        }
+                    }).setPositiveButton("YÜKLE", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=com.kadirbozkurt.nobetcieczaneler")));
+                        }
+                    }).show();
+                }
+            }
+
+        });
+
+
     }
 }

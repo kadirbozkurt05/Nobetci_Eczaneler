@@ -43,9 +43,6 @@ public class MainActivity extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
     private boolean isChecked;
 
-
-
-
     String province = "";
     String district = "";
     String[] iller = {"01 Adana", "02 Adıyaman", "03 Afyonkarahisar", "04 Ağrı", "05 Amasya", "06 Ankara", "07 Antalya", "08 Artvin",
@@ -327,8 +324,6 @@ public class MainActivity extends AppCompatActivity {
         return url;
 
     }
-
-
     private void themeChange(){
         RadioGroup themeRadioGroup = findViewById(R.id.themeRadioGroup);
         int savedRadioButton = sharedPreferences.getInt("savedRadioButton", R.id.defaultThemeRadioButton);
@@ -353,17 +348,18 @@ public class MainActivity extends AppCompatActivity {
                             // Koyu mod aktif
                             setTheme(R.style.Theme_AppCompat);
                             sharedPreferences.edit().putInt("theme", R.style.Theme_AppCompat).apply();
-                            sharedPreferences.edit().putInt("savedRadioButton", R.id.darkThemeRadioButton).apply();
+                            sharedPreferences.edit().putInt("savedRadioButton", R.id.defaultThemeRadioButton).apply();
                         } else {
                             // Açık mod aktif
                             setTheme(R.style.Theme_AppCompat_Light);
                             sharedPreferences.edit().putInt("theme", R.style.Theme_AppCompat_Light).apply();
-                            sharedPreferences.edit().putInt("savedRadioButton", R.id.lightThemeRadioButton).apply();
+                            sharedPreferences.edit().putInt("savedRadioButton", R.id.defaultThemeRadioButton).apply();
                         }
                         break;
                 }
             }
         });
+
 
         RadioButton selectedRadioButton = findViewById(savedRadioButton);
         selectedRadioButton.setChecked(true);
